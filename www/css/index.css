@@ -1,0 +1,161 @@
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+	background-color:grey;
+}
+
+.app {
+    background: url(../images/cordova.png) no-repeat center top; 
+    position: absolute;             
+    left: 50%;
+    top: 50%;
+    height: 50px;                  
+    width: 225px;                   
+    text-align: center;
+    padding: 180px 0px 0px 0px;     
+    margin: -115px 0px 0px -112px;
+}
+
+@media screen and (min-aspect-ratio: 1/1) and (min-width:400px) {
+    .app {
+        background-position:left center;
+        padding:75px 0px 75px 170px;
+        margin:-90px 0px 0px -198px;
+    }
+}
+
+h1 {
+    font-size:24px;
+    font-weight:normal;
+    margin:0px;
+    overflow:visible;
+    padding:0px;
+    text-align:center;
+}
+
+.event {
+    border-radius:4px;
+    -webkit-border-radius:4px;
+    color:#FFFFFF;
+    font-size:12px;
+    margin:0px 30px;
+    padding:2px 0px;
+}
+
+	.event.listening {
+		background-color: #669922;
+		display: block;
+	}
+
+.event.received {
+    background-color:#4B946A;
+    display:none;
+}
+
+@keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+ 
+@-webkit-keyframes fade {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+ 
+.blink {
+    animation:fade 3000ms infinite;
+    -webkit-animation:fade 3000ms infinite;
+}
+.title {
+	width:100%;
+    height:50%;    
+}
+.help{
+    width:50%;
+    height:50%;
+}
+.title{
+    width:100%;
+    height:19vh;
+    position:relative;
+    background-color:white;
+    float:left;
+    align-content:center;
+    border-bottom:1vh solid black;
+}
+#titlepic {
+        width: 100%;
+        height: 100%;
+
+    }
+#topcontainer {
+    width: 100%;
+    float: left;
+    position: relative;
+    background-color: aqua;
+    float: left;
+    height: 45vh;
+    
+}
+#scan{
+    background-color:white;
+    width:inherit;
+    float:left;
+    position:relative;
+    height:inherit;
+    align-items:center;
+}
+#botcontainer{
+    width:100%;
+    float:right;
+    background-color:white;
+    position:relative;
+    height:30vh;
+    
+}
+#settings{
+    width:50%;
+    float:left;
+    height:inherit;
+    background-color:white;
+    position:relative;
+    height:inherit;
+}
+#report{
+    width:50%;
+    height:inherit;
+    background-color:white;
+    float:right;
+    position:relative;
+    height:inherit;
+}
+
+.pic {
+    width: 50%;
+    height: 50%;
+    display: block;
+    margin: auto;
+    margin-top: 15%; /* Half the height */
+    margin-left: 25%; /* Half the width */
+}
+.podtext{
+    text-align:center;
+    font-size:16px;
+    color:#669922;
+    
+}
+.scantxt{
+    font-size:30px;
+}
+.scanpic {
+    width: 50%;
+    height: 50%;
+    display: block;
+    margin: auto;
+    margin-top: 5%; /* Half the height */
+    margin-left: 25%; /* Half the width */
+}

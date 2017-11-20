@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+    <!--
+        Customize the content security policy in the meta tag below as needed. Add 'unsafe-inline' to default-src to enable inline JavaScript.
+        For details, see http://go.microsoft.com/fwlink/?LinkID=617521
+    -->
+        
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval' 'unsafe-inline'; connect-src 'self' https://ndb.nal.usda.gov https://api.nal.usda.gov; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <script src="scripts/jquery-3.2.1.js"></script>
+        <title>Capstone</title>
+
+    </head>
+	
+    <body>
+    <container class="title">
+        <div>
+
+            <img src="images/logo.PNG" id="titlepic"/>
+            <hr />
+        </div>
+    </container>
+    <container id="topcontainer">
+        
+        <a target="_blank" href="javascript:scan();">
+            <div id="scan">
+                <div class="podtext">
+                    <hr />
+
+                    <p class="scantxt">Scan</p>
+                </div>
+                <div>
+                    <img src="images/cam.png" class="scanpic">
+                </div>
+
+            </div>
+        </a>
+
+</container>
+
+    <container id="botcontainer">
+        <a target="_blank" href="javascript:alert();">
+            <div id="settings">
+                <div class="podtext">
+                    <hr />
+                    <p>Settings</p>
+                </div>
+                <div>
+                    <img src="images/Cog.png" class="pic" />
+                </div>
+            </div></a>
+            <div id="report">
+                <div class="podtext">
+                    <hr />
+                    <p>Contact Us</p>
+                </div>
+                <div>
+                    <img src="images/Email.png" class="pic" />
+                </div>
+            </div>
+</container>
+
+            <script type="text/javascript" src="cordova.js"></script>
+            <script type="text/javascript" src="scripts/platformOverrides.js"></script>
+            <script type="text/javascript" src="scripts/index.js"></script>
+            <script type="text/javascript">
+                var permissions = cordova.plugins.permissions;
+                var list = [
+                    permissions.INTERNET,
+                    permissions.GET_ACCOUNTS,
+                    permissions.ACCESS_NETWORK_STATE                    
+                ];
+
+                permissions.hasPermission(list, callback, null);
+
+                function error() {
+                    console.warn('Camera or Accounts permission is not turned on');
+                }
+
+                function success(status) {
+                    if (!status.hasPermission) {
+
+                        permissions.requestPermissions(
+                            list,
+                            function (status) {
+                                if (!status.hasPermission) error();
+                            },
+                            error);
+                    }
+                }
+                
+            </script>
+        
+        <script type="text/javascript">
+                
+            var nonv = [];    
+            function scan() {
+                cordova.plugins.barcodeScanner.scan(
+                    function (result) {
+                        if (!result.cancelled) {
+                            var fhalfurl = "https://api.nal.usda.gov/ndb/search/?format=json&q=";
+                            var q = result.text;
+
+                            var shalfurl = "&sort=n&max=25&offset=0&api_key=lvQpnekDFWzBjItNOdFdaSizBJb3ZNIB1AQwnxGf";
+                            var url = fhalfurl + q + shalfurl;
+                            var surl;
+                            var request = new XMLHttpRequest();
+                            request.open("GET", url, "json");
+                            request.onload = function () {
+                                var list = JSON.parse(request.responseText);
+
+                                var ndbno = list.list.item[0].ndbno;
+                                var surl = "https://api.nal.usda.gov/ndb/V2/reports?ndbno=" + ndbno + "&type=b&format=json&api_key=lvQpnekDFWzBjItNOdFdaSizBJb3ZNIB1AQwnxGf";
+
+
+                                var srequest = new XMLHttpRequest();
+                                srequest.open("GET", surl, "json");
+                                srequest.onload = function () {
+                                    var nlist = JSON.parse(srequest.responseText);
+                                    var ingredients = (nlist.foods[0].food.ing.desc)
+
+                                    //filtering out unwanted characters such as "," & "("
+
+                                    var ingredients = ingredients.replace(".", "").replace("\)", "").replace("\*", "");                                   
+
+
+                                    
+
+
+                                    // fingredients is where array of ingredients will be stored 
+                                    var fingredients = [];
+                                    var ingred = ingredients.split("\(");
+                                    for (var y = 0; y < ingred.length; y++) {
+                                        var sub = ingred[y].split(", ");
+                                        for (var j = 0; j < sub.length; j++) {
+                                            fingredients.push(sub[j]);
+                                        }
+                                    }
+
+                                    
+                                    file = "scripts/veganingredients.txt";
+                                    var rawFile = new XMLHttpRequest();
+                                    rawFile.open("GET", file, true);
+
+                                    rawFile.onreadystatechange = function () {
+                                        
+                                        if (rawFile.readyState === 4) {
+                                            if (rawFile.status === 200 || rawFile.status == 0) {
+                                                var allText = rawFile.responseText;
+                                                nonv = allText.split(",");
+
+                                            }
+                                        }
+
+                                    }
+
+                                    alert(nonv);
+                                    rawFile.send(null);
+                                                                      
+                                    
+                                    
+
+
+
+                                                                        
+
+                                    var nonvegan = nonv;
+
+                                    //checking each ingredient if it is contained in the array of non vegan ingredients if an ingredient returns true terminate and send back the non vegan ingredient if non are in it send back it is ethical to eat
+                                    var found = false;
+
+                                    for (var L = 0; L < fingredients.length; L++) {
+
+                                        if (nonvegan.indexOf(fingredients[L]) > -1) {
+
+                                            found = true;
+                                            if (found == true) {
+                                                alert("This Food is not VEGAN because of the indgredient " + fingredients[L]);
+                                                break;
+                                            }
+                                            else {
+                                                alert("This food is VEGAN")
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                    //for (var i = 0; i < fingredients.length; i++)
+                                    //{                        
+                                    //    document.getElementById("jsonp").innerHTML += fingredients[i] + "</br>";
+                                    //}
+
+                                };
+                                srequest.send();
+                            };
+
+                            request.send();
+
+
+                        }
+                    },
+                    function (error) {
+                        alert("Scanning failed: " + error);
+                    }
+                );
+            }
+        </script>
+
+        
+        <script type="text/javascript" src="scripts/scan.js"></script>
+        
+</body>
+</html>
